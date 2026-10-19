@@ -2,6 +2,7 @@
 #For full credit, provide answers for at least 7/11
 
 #List names of students collaborating with: 
+Aylin
 
 ### SETUP: RUN THIS BEFORE STARTING ----------
 
@@ -17,6 +18,12 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+glimpse(ds)
+
+ds$Year <- as.numeric(ds$Year)
+
+glimpse(ds)
+
 
 ### Question 2 ---------- 
 
@@ -25,6 +32,8 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+ds <- rename_with(ds, tolower)
+glimpse(ds)
 
 ### Question 3 ----------
 
@@ -34,6 +43,9 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+??floor
+ds$decade <- (floor(ds$year / 10) * 10)
+glimpse(ds)
 
 ### Question 4 ----------
 
@@ -41,6 +53,8 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+ds <- arrange(ds, rank)
+glimpse(ds)
 
 ### Question 5 ----------
 
@@ -49,7 +63,11 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+top10 <- filter(ds, rank < 11)
+glimpse(top10)
 
+top10 <- (select(top10, song, artist))
+glimpse(top10)
 
 ### Question 6 ----------
 
@@ -59,6 +77,12 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+?drop_na
+ds_no_na <- drop_na(ds, year)
+glimpse(ds_no_na)
+
+ds_sum <- summarize(ds_no_na, earliest = min(year), most_recent = max(year), average = mean(year))
+ds_sum
 
 ### Question 7 ----------
 
@@ -70,6 +94,8 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+ds_by_year <- filter(ds, year %in% c(1879, 1980, 2020))
+arrange(ds_by_year, year)
 
 ### Question 8 ---------- 
 
@@ -81,6 +107,20 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+?ifelse
+
+ds <- ds %>% mutate(year = ifelse(year == 1879, 1979, year))
+view(ds)
+
+ds$decade <- (floor(ds$year / 10) * 10)
+glimpse(ds)
+
+ds_no_na <- drop_na(ds, year)
+ds_sum <- summarize(ds_no_na, earliest = min(year), most_recent = max(year), average = mean(year))
+ds_sum
+
+ds_by_year <- filter(ds_no_na, year %in% c(1937, 1981, 2020))
+arrange(ds_by_year, year)
 
 ### Question 9 ---------
 
@@ -92,6 +132,8 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+ds_no_decade_na <- filter_out(ds, is.na(decade))
+ds_no_decade_na %>% group_by(decade) %>% summarize(average_rank = mean(rank))
 
 ### Question 10 --------
 
@@ -103,6 +145,11 @@ ds <- read_csv("data_raw/rolling_stone_500.csv")
 
 #ANSWER
 
+?count
+?slice_max
+songs_by_decade <- ds_no_decade_na %>% group_by(decade) %>% count(decade)
+glimpse(songs_by_decade)
+slice_max(songs_by_decade, n, n = 1)
 
 ### Question 11 ------
 # Use RStudio's styler to style all the code in your homework
